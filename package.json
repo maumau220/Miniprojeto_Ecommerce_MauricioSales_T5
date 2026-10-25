@@ -1,0 +1,21 @@
+{
+  "name": "miniprojeto-ecommerce",
+  "version": "1.0.0",
+  "description": "Sistema de Gerenciamento de E-commerce com TypeScript e Node.js - Mini-Projeto Avaliativo Módulo 1",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/main.js"
+  },
+  "keywords": [
+    "ecommerce",
+    "typescript",
+    "node"
+  ],
+  "author": "Maurício Sales",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.0"
+  }
+}
