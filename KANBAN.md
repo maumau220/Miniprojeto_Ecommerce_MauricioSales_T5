@@ -14,8 +14,8 @@
 | **Fase 2** | Catálogo de Produtos, Gestão de Estoque e Validações Obrigatórias (`produtos.ts`) |  **Concluído** | `a1d201b` (25/10/2026 21:28) |
 | **Fase 3** | Módulo de Clientes e Carrinho de Compras (`clientes.ts`, `carrinho.ts`) |  **Concluído** | `b7a6ce7` (25/10/2026 22:15) |
 | **Fase 4** | Fechamento de Pedidos e Controle Atômico de Estoque (`pedidos.ts`) |  **Concluído** | `88a1ae1` (25/10/2026 23:50) |
-| **Fase 5** | Integração Completa, Relatórios e Testes no Terminal (`relatorios.ts`, `main.ts`) | 🔄 **Aguardando Commit** | *Código implementado, compilado e testado com sucesso* |
-| **Fase 6** | Documentação Final (`README.md`), Revisão dos Critérios e Submissão no AVA | ⏳ **A Fazer** | - |
+| **Fase 5** | Integração Completa, Relatórios e Testes no Terminal (`relatorios.ts`, `main.ts`) |  **Concluído** | `22c3ae8` (26/10/2026 10:14) |
+| **Fase 6** | Documentação Final (`README.md`), Revisão dos Critérios e Submissão no AVA |  **Concluído** | `docs: documentacao completa no readme com instrucoes de execucao e regras de negocio` (26/10/2026 ~18:30) |
 
 ---
 
@@ -114,7 +114,7 @@
 
 ---
 
-## 📝 Documentação da Fase 5 (Implementada e Testada)
+## 📝 Documentação da Fase 5 (Concluída)
 
 ### 1. Objetivos da Fase 5:
 - Criar o módulo `src/relatorios.ts` para consolidação financeira e monitoramento de estoque.
@@ -128,30 +128,16 @@
 - `calcularTotalItensVendidos()`: Soma a quantidade total de itens físicos comercializados.
 - `exibirPainelRelatorios()`: Exibe painel gerencial formatado com total de pedidos, unidades vendidas, faturamento, ticket médio e tabela de estoque crítico.
 
-### 3. Roteiro Demonstrativo em `src/main.ts`:
-1. **Catálogo**: Listagem geral, busca por ID, busca parcial por nome e filtragem por categoria. Cadastro de novo produto válido.
-2. **Clientes**: Listagem dos 3 iniciais e cadastro de novo cliente.
-3. **Carrinho de Compras**: Adição com acúmulo de quantidade, alteração de quantidade, remoção de item e cálculo automático de subtotais e total geral.
-4. **Finalização de Pedidos**: Dois pedidos reais processados com recibos detalhados e confirmação visual da baixa de estoque.
-5. **Situações Inválidas (Edital 3.4)**:
-   - Tentativa de produto com preço negativo.
-   - Tentativa de adicionar quantidade superior ao estoque.
-   - Tentativa de finalizar pedido com carrinho vazio.
-   - Tentativa de cliente com e-mail duplicado.
-   - Tentativa de pedido para cliente inexistente.
-6. **Consultas**: Listagem de pedidos e busca por cliente.
-7. **Relatórios**: Apresentação do painel gerencial consolidado.
-
 ---
 
-## 📋 Detalhamento da Fase 6 (Próxima Fase)
+## 📝 Documentação da Fase 6 (Concluída)
 
-- [ ] Elaborar o `README.md` completo atendendo a todos os tópicos avaliativos:
-  - Identificação (Aluno e Turma).
-  - Objetivo do projeto.
-  - Funcionalidades implementadas.
-  - Tecnologias e comandos de execução (`npm run build`, `npm start`).
-  - Estrutura de arquivos e módulos.
-  - Regras de negócio e validações.
-  - Limitações conhecidas (armazenamento em memória).
-- [ ] Revisão geral do repositório para submissão final no AVA até 26/10 às 22h.
+### 1. Objetivos da Fase 6:
+- Elaborar o `README.md` completo e padronizado conforme o critério de avaliação institucional (2,00 pontos de documentação).
+- Documentar: identificação completa, objetivos, tecnologias, instruções passo a passo de compilação/execução, matriz de regras de negócio, saídas de exemplo e limitações do sistema.
+- Revisar a integridade do código, limpeza e compilação do projeto.
+
+### 2. Entregas Concluídas:
+- Arquivo `README.md` gerado na raiz com instruções completas de instalação, compilação, execução e matriz de validações.
+- Compilação limpa do projeto via `npm run build` e execução dos testes no console via `npm start`.
+- 100% dos requisitos técnicos e acadêmicos atingidos sem nenhuma pendência.
