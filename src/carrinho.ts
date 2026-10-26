@@ -170,3 +170,4 @@ export function exibirResumoCarrinho(): void {
   console.table(tabelaItens);
   console.log(`Valor Total do Carrinho: R$ ${calcularTotalCarrinho().toFixed(2)}`);
 }
+

@@ -12,8 +12,8 @@
 | :--- | :--- | :---: | :--- |
 | **Fase 1** | Setup do Ambiente, Configurações (`tsconfig`, `.gitignore`, `package.json`) e Tipos Centrais (`types.ts`) |  **Concluído** | `4f065d2` (25/10/2026 20:48) |
 | **Fase 2** | Catálogo de Produtos, Gestão de Estoque e Validações Obrigatórias (`produtos.ts`) |  **Concluído** | `a1d201b` (25/10/2026 21:28) |
-| **Fase 3** | Módulo de Clientes e Carrinho de Compras (`clientes.ts`, `carrinho.ts`) |  **Concluído** | `feat: cadastro de clientes e logica do carrinho de compras com calculo de subtotais` (25/10/2026 ~22:15) |
-| **Fase 4** | Fechamento de Pedidos e Controle Atômico de Estoque (`pedidos.ts`) | ⏳ **A Fazer** | - |
+| **Fase 3** | Módulo de Clientes e Carrinho de Compras (`clientes.ts`, `carrinho.ts`) |  **Concluído** | `b7a6ce7` (25/10/2026 22:15) |
+| **Fase 4** | Fechamento de Pedidos e Controle Atômico de Estoque (`pedidos.ts`) |  **Concluído** | `feat: modulo de finalizacao de pedidos com historico de precos e baixa no estoque` (25/10/2026 ~23:50) |
 | **Fase 5** | Integração Completa, Relatórios e Testes no Terminal (`relatorios.ts`, `main.ts`) | ⏳ **A Fazer** | - |
 | **Fase 6** | Documentação Final (`README.md`), Revisão dos Critérios e Submissão no AVA | ⏳ **A Fazer** | - |
 
@@ -85,32 +85,50 @@
 
 ### 3. Funções Implementadas em `carrinho.ts`:
 - `listarCarrinho()` e `limparCarrinho()`.
-- `adicionarAoCarrinho(produtoId, quantidade)`: Valida se produto existe, se quantidade > 0 e se quantidade solicitada (inclusive se já houver itens desse produto no carrinho) não excede o estoque disponível. Se o produto já estiver no carrinho, soma a quantidade sem duplicar registros.
+- `adicionarAoCarrinho(produtoId, quantidade)`: Valida se produto existe, se quantidade > 0 e se quantidade solicitada não excede o estoque disponível. Soma a quantidade sem duplicar registros.
 - `removerDoCarrinho(produtoId)`: Remove o item do carrinho.
 - `alterarQuantidadeCarrinho(produtoId, novaQuantidade)`: Altera a quantidade garantindo que seja positiva e dentro do estoque.
 - `calcularSubtotalItem(item)`: Multiplica preço unitário pela quantidade.
 - `calcularTotalCarrinho()`: Soma os subtotais através de `.reduce()`.
 - `exibirResumoCarrinho()`: Exibe tabela detalhada no terminal com subtotais formatados em R$ e total geral.
 
-### 4. Testes Executados em `src/main.ts`:
-- Listagem dos 3 clientes iniciais e cadastro de novo cliente.
-- Teste de recusa de ID duplicado, e-mail duplicado e nome vazio em clientes.
-- Inserção de itens no carrinho com acúmulo automático de quantidade.
-- Teste de recusa de quantidade zero/negativa, produto inexistente e quantidade superior ao estoque.
-- Alteração de quantidade e remoção de produto do carrinho, comprovando cálculos automáticos de subtotal e total.
+---
+
+## 📝 Documentação da Fase 4 (Concluída)
+
+### 1. Objetivos da Fase 4:
+- Implementar a finalização e consulta de pedidos em `src/pedidos.ts`.
+- Garantir a integridade do catálogo e histórico de compras:
+  - Validação de carrinho não vazio e cliente existente.
+  - Verificação atômica de estoque (tudo ou nada).
+  - Congelamento dos preços históricos no pedido (imutabilidade após alteração no catálogo).
+  - Baixa no estoque dos produtos apenas após sucesso total da validação.
+  - Esvaziamento do carrinho pós-compra.
+
+### 2. Funções Implementadas:
+- `finalizarPedido(clienteId)`: Orquestra todas as validações, congela preços históricos, debita o estoque, registra a compra e esvazia o carrinho.
+- `listarPedidos()`: Retorna o histórico de todos os pedidos.
+- `buscarPedidoPorId(id)`: Localiza um pedido específico por ID.
+- `buscarPedidosPorCliente(clienteId)`: Filtra pedidos realizados por um determinado cliente.
+- `exibirDetalhesPedido(pedido)`: Exibe o recibo completo e formatado do pedido no terminal.
+
+### 3. Testes Executados em `src/main.ts`:
+- Fechamento de pedidos de sucesso para clientes distintos.
+- Conferência da baixa de estoque dos produtos vendidos.
+- Teste prático de imutabilidade de preços: alteração do valor de um produto no catálogo e comprovação de que o pedido anterior reteve o preço de compra.
+- Rejeição de carrinho vazio e cliente inexistente.
+- Validação atômica de estoque: cancelamento total do pedido sem deduzir nenhum estoque quando um item não possui quantidade suficiente.
+- Consulta de pedidos gerais e filtrados por cliente.
 
 ---
 
-## 📋 Detalhamento da Fase 4 (Próxima Fase)
+## 📋 Detalhamento da Fase 5 (Próxima Fase)
 
-- [ ] Criar `src/pedidos.ts`:
-  - Armazenamento em memória `pedidos: Pedido[]`.
-  - Implementar `finalizarPedido(clienteId: number): Pedido | null`:
-    - Validação de carrinho não vazio.
-    - Validação de cliente cadastrado.
-    - Validação prévia de estoque para **todos** os itens (garantia atômica / sem desconto parcial).
-    - Congelamento dos preços históricos nos itens do pedido.
-    - Abatimento do estoque dos produtos em `produtos.ts`.
-    - Esvaziamento do carrinho e geração de ID único.
-  - Implementar `listarPedidos(): Pedido[]`.
-  - Implementar `buscarPedidosPorCliente(clienteId: number): Pedido[]`.
+- [ ] Criar `src/relatorios.ts`:
+  - `relatorioEstoqueBaixo(limite)`: Lista produtos com estoque abaixo do limite (ex: menor que 10).
+  - `relatorioFaturamentoTotal()`: Soma de todas as vendas realizadas.
+  - `relatorioVendasPorCategoria()`: Consolidação do volume financeiro por categoria de produto.
+- [ ] Atualizar `src/main.ts` com um roteiro integrado completo para a demonstração final:
+  - Fluxo comercial completo de ponta a ponta.
+  - Apresentação de relatórios gerenciais consolidados.
+  - Demonstração explícita de todas as situações inválidas exigidas no edital (preço negativo, estoque excedido, carrinho vazio).

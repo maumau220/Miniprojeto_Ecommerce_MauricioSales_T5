@@ -1,109 +1,119 @@
 // ==========================================
 // PONTO DE ENTRADA DA APLICAÇÃO (main.ts)
-// Demonstração das Funcionalidades - Fase 3
+// Demonstração das Funcionalidades - Fase 4
 // ==========================================
 
 import {
   listarProdutos,
   buscarProdutoPorId,
+  atualizarProduto,
 } from "./produtos";
 
 import {
   listarClientes,
   buscarClientePorId,
-  cadastrarCliente,
 } from "./clientes";
 
 import {
   adicionarAoCarrinho,
-  alterarQuantidadeCarrinho,
-  removerDoCarrinho,
   exibirResumoCarrinho,
-  calcularTotalCarrinho,
+  limparCarrinho,
 } from "./carrinho";
+
+import {
+  finalizarPedido,
+  listarPedidos,
+  buscarPedidosPorCliente,
+  exibirDetalhesPedido,
+} from "./pedidos";
 
 console.log("==================================================");
 console.log("🛒 SISTEMA DE E-COMMERCE (TypeScript & Node.js)");
-console.log("TESTE DE FUNCIONALIDADES - FASE 3: CLIENTES E CARRINHO");
+console.log("TESTE DE FUNCIONALIDADES - FASE 4: PEDIDOS E ESTOQUE");
 console.log("==================================================\n");
 
 // ----------------------------------------------------
-// 1. CLIENTES
+// 1. FLUXO DE SUCESSO: COMPRA DO CLIENTE 1 (Ana Silva)
 // ----------------------------------------------------
-console.log("--- 1. Listagem dos Clientes Iniciais ---");
-console.table(listarClientes());
+console.log("--- 1. Estado Inicial do Estoque dos Produtos 1 e 2 ---");
+console.log("Produto 1 (Teclado):", buscarProdutoPorId(1));
+console.log("Produto 2 (Mouse):", buscarProdutoPorId(2));
 
-console.log("\n--- 2. Cadastro de Novo Cliente Válido ---");
-cadastrarCliente({
-  id: 4,
-  nome: "Lucas Pereira",
-  email: "lucas.pereira@email.com",
-});
-
-console.log("\n--- 3. Teste de Validações em Clientes ---");
-console.log("-> Tentativa com ID duplicado (ID 1):");
-cadastrarCliente({
-  id: 1,
-  nome: "Outra Ana",
-  email: "outra.ana@email.com",
-});
-
-console.log("\n-> Tentativa com E-mail duplicado:");
-cadastrarCliente({
-  id: 5,
-  nome: "Carlos Clone",
-  email: "carlos.edu@email.com",
-});
-
-console.log("\n-> Tentativa com Nome Vazio:");
-cadastrarCliente({
-  id: 6,
-  nome: "",
-  email: "semnome@email.com",
-});
-
-// ----------------------------------------------------
-// 2. CARRINHO DE COMPRAS
-// ----------------------------------------------------
-console.log("\n--- 4. Adição de Itens Válidos ao Carrinho ---");
-// Produto 1: Teclado Mecânico (Preço: 250, Estoque: 15) -> Adicionar 2 un
-adicionarAoCarrinho(1, 2);
-
-// Produto 2: Mouse Gamer (Preço: 120, Estoque: 20) -> Adicionar 3 un
-adicionarAoCarrinho(2, 3);
-
-// Adicionar novamente o Produto 1 para testar acúmulo de quantidade (mais 1 un -> total 3 un)
-adicionarAoCarrinho(1, 1);
-
+console.log("\n--- 2. Montando o Carrinho para Ana Silva (Cliente ID 1) ---");
+adicionarAoCarrinho(1, 2); // 2 Teclados (Estoque inicial: 15)
+adicionarAoCarrinho(2, 3); // 3 Mouses (Estoque inicial: 20)
 exibirResumoCarrinho();
 
-console.log("\n--- 5. Testes de Validações no Carrinho ---");
+console.log("\n--- 3. Finalizando Pedido da Ana Silva ---");
+const pedidoAna = finalizarPedido(1);
+if (pedidoAna) {
+  exibirDetalhesPedido(pedidoAna);
+}
 
-console.log("\n-> Tentativa 1: Quantidade menor ou igual a zero:");
-adicionarAoCarrinho(3, 0);
+console.log("\n--- 4. Conferindo Atualização do Estoque Pós-Venda ---");
+console.log("Produto 1 (deve ter 13 em estoque):", buscarProdutoPorId(1));
+console.log("Produto 2 (deve ter 17 em estoque):", buscarProdutoPorId(2));
 
-console.log("\n-> Tentativa 2: Produto inexistente (ID 999):");
-adicionarAoCarrinho(999, 1);
+// ----------------------------------------------------
+// 2. CONGELAMENTO HISTÓRICO DE PREÇO
+// ----------------------------------------------------
+console.log("\n--- 5. Teste de Imutabilidade do Preço Histórico ---");
+console.log("Alterando o preço do Teclado no catálogo de R$ 250 para R$ 320...");
+atualizarProduto(1, { preco: 320.0 });
 
-console.log("\n-> Tentativa 3: Quantidade superior ao estoque disponível:");
-// Produto 3 (Monitor) tem 8 no estoque, tentar adicionar 10
-adicionarAoCarrinho(3, 10);
+console.log("Conferindo se o Pedido #1 da Ana ainda mantém o preço antigo de R$ 250.00:");
+console.log(`Preço no Pedido #1: R$ ${pedidoAna?.itens[0].precoUnitario.toFixed(2)} | Preço atual no Catálogo: R$ ${buscarProdutoPorId(1)?.preco.toFixed(2)}`);
 
-console.log("\n--- 6. Alteração e Remoção no Carrinho ---");
-// Alterar quantidade do Mouse Gamer (ID 2) de 3 para 5
-alterarQuantidadeCarrinho(2, 5);
+// ----------------------------------------------------
+// 3. SEGUNDO PEDIDO: Carlos Eduardo (Cliente ID 2)
+// ----------------------------------------------------
+console.log("\n--- 6. Criando Pedido para Carlos Eduardo (Cliente ID 2) ---");
+adicionarAoCarrinho(3, 1); // 1 Monitor
+const pedidoCarlos = finalizarPedido(2);
+if (pedidoCarlos) {
+  exibirDetalhesPedido(pedidoCarlos);
+}
 
-// Adicionar um produto temporário para depois remover
-adicionarAoCarrinho(4, 1);
-console.log("\nCarrinho antes da remoção:");
-exibirResumoCarrinho();
+// ----------------------------------------------------
+// 4. TESTES DE VALIDAÇÕES E CASOS INVÁLIDOS
+// ----------------------------------------------------
+console.log("\n--- 7. Testes de Situações Inválidas na Finalização ---");
 
-// Remover produto ID 4
-removerDoCarrinho(4);
+console.log("\n-> Tentativa 1: Finalizar pedido com carrinho vazio:");
+finalizarPedido(1);
 
-console.log("\nCarrinho após remover o produto ID 4:");
-exibirResumoCarrinho();
+console.log("\n-> Tentativa 2: Finalizar pedido para cliente inexistente (ID 999):");
+adicionarAoCarrinho(4, 1); // Adiciona item no carrinho
+finalizarPedido(999);
+limparCarrinho();
+
+console.log("\n-> Tentativa 3: Consistência Atômica de Estoque:");
+console.log("Adicionando item normal (1 Headset) e item que excede estoque...");
+// Monitor tem 7 restantes no estoque (inicial era 8, 1 foi vendido para Carlos)
+adicionarAoCarrinho(4, 1); // 1 Headset
+// Forçando inserção no carrinho simulando caso de corrida/falta de estoque
+// Estoque do monitor é 7, adicionamos 7 e depois tentamos pedir além:
+adicionarAoCarrinho(3, 7);
+// Simulando que alguém comprou o último monitor por fora, deixando estoque em 6
+const monitor = buscarProdutoPorId(3)!;
+monitor.estoque = 5; // agora o carrinho pede 7 mas só tem 5!
+console.log(`Estoque do Monitor alterado para ${monitor.estoque}, mas o carrinho tem 7.`);
+
+console.log("Tentando finalizar pedido com falha de estoque:");
+const pedidoFalha = finalizarPedido(1);
+console.log("Resultado do pedido:", pedidoFalha === null ? "CANCELADO COM SUCESSO (Nenhum estoque abatido)" : "ERRO");
+console.log("Conferência do estoque do Headset (não deve ter sido descontado):", buscarProdutoPorId(4)?.estoque);
+
+// ----------------------------------------------------
+// 5. CONSULTAS DE PEDIDOS
+// ----------------------------------------------------
+console.log("\n--- 8. Consulta Geral de Pedidos ---");
+console.log(`Total de pedidos realizados no sistema: ${listarPedidos().length}`);
+
+console.log("\n--- 9. Consulta de Pedidos da Ana Silva (ID 1) ---");
+const pedidosAna = buscarPedidosPorCliente(1);
+console.log(`Pedidos encontrados para Ana: ${pedidosAna.length}`);
 
 console.log("\n==================================================");
-console.log(`Fase 3 executada com sucesso! Total atual do carrinho: R$ ${calcularTotalCarrinho().toFixed(2)}`);
+console.log("Fase 4 executada com sucesso!");
 console.log("==================================================");

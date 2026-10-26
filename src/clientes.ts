@@ -96,3 +96,4 @@ export function cadastrarCliente(novoCliente: Cliente): boolean {
   console.log(`[SUCESSO] Cliente "${novoCliente.nome}" cadastrado com sucesso!`);
   return true;
 }
+
