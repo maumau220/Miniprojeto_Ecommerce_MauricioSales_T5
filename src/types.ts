@@ -56,3 +56,4 @@ export type Pedido = {
 
 // Exemplo didático de Tupla conforme ensinado em aula: [idPedido, total, quantidadeItens]
 export type ResumoPedidoTupla = [number, number, number];
+
