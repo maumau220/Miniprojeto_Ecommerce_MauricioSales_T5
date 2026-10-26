@@ -11,8 +11,8 @@
 | Fase | Descrição | Status | Commit / Evidência |
 | :--- | :--- | :---: | :--- |
 | **Fase 1** | Setup do Ambiente, Configurações (`tsconfig`, `.gitignore`, `package.json`) e Tipos Centrais (`types.ts`) |  **Concluído** | `4f065d2` (25/10/2026 20:48) |
-| **Fase 2** | Catálogo de Produtos, Gestão de Estoque e Validações Obrigatórias (`produtos.ts`) |  **Concluído** | `feat: implementacao do modulo de gerenciamento de produtos e validacoes de estoque` (25/10/2026 ~21:28) |
-| **Fase 3** | Módulo de Clientes e Carrinho de Compras (`clientes.ts`, `carrinho.ts`) | ⏳ **A Fazer** | - |
+| **Fase 2** | Catálogo de Produtos, Gestão de Estoque e Validações Obrigatórias (`produtos.ts`) |  **Concluído** | `a1d201b` (25/10/2026 21:28) |
+| **Fase 3** | Módulo de Clientes e Carrinho de Compras (`clientes.ts`, `carrinho.ts`) |  **Concluído** | `feat: cadastro de clientes e logica do carrinho de compras com calculo de subtotais` (25/10/2026 ~22:15) |
 | **Fase 4** | Fechamento de Pedidos e Controle Atômico de Estoque (`pedidos.ts`) | ⏳ **A Fazer** | - |
 | **Fase 5** | Integração Completa, Relatórios e Testes no Terminal (`relatorios.ts`, `main.ts`) | ⏳ **A Fazer** | - |
 | **Fase 6** | Documentação Final (`README.md`), Revisão dos Critérios e Submissão no AVA | ⏳ **A Fazer** | - |
@@ -70,12 +70,47 @@
 
 ---
 
-## 📋 Detalhamento da Fase 3 (Próxima Fase)
+## 📝 Documentação da Fase 3 (Concluída)
 
-- [ ] Criar `src/clientes.ts`:
-  - Array com 3 clientes iniciais.
-  - Funções: `cadastrarCliente`, `listarClientes`, `buscarClientePorId`.
-  - Validações: ID único, e-mail único, nome e e-mail preenchidos.
-- [ ] Criar `src/carrinho.ts`:
-  - Funções: `adicionarAoCarrinho`, `removerDoCarrinho`, `alterarQuantidadeCarrinho`, `listarCarrinho`, `calcularSubtotalItem`, `calcularTotalCarrinho`, `limparCarrinho`.
-  - Validações: Produto existente, quantidade > 0, limite de estoque disponível, somar quantidade caso o item já exista no carrinho.
+### 1. Objetivos da Fase 3:
+- Implementar o gerenciamento de clientes em `src/clientes.ts` com validação de unicidade de ID e e-mail.
+- Desenvolver o carrinho de compras em `src/carrinho.ts` com controle de quantidade, cálculo de subtotais e validação de estoque em tempo real.
+
+### 2. Funções Implementadas em `clientes.ts`:
+- 3 clientes pré-cadastrados no array inicial.
+- `listarClientes()`: Retorna a lista de clientes.
+- `buscarClientePorId(id)`: Localiza cliente por ID.
+- `buscarClientePorEmail(email)`: Localiza cliente por e-mail para validação de unicidade.
+- `cadastrarCliente(novoCliente)`: Valida nome e e-mail preenchidos, além de unicidade de ID e e-mail.
+
+### 3. Funções Implementadas em `carrinho.ts`:
+- `listarCarrinho()` e `limparCarrinho()`.
+- `adicionarAoCarrinho(produtoId, quantidade)`: Valida se produto existe, se quantidade > 0 e se quantidade solicitada (inclusive se já houver itens desse produto no carrinho) não excede o estoque disponível. Se o produto já estiver no carrinho, soma a quantidade sem duplicar registros.
+- `removerDoCarrinho(produtoId)`: Remove o item do carrinho.
+- `alterarQuantidadeCarrinho(produtoId, novaQuantidade)`: Altera a quantidade garantindo que seja positiva e dentro do estoque.
+- `calcularSubtotalItem(item)`: Multiplica preço unitário pela quantidade.
+- `calcularTotalCarrinho()`: Soma os subtotais através de `.reduce()`.
+- `exibirResumoCarrinho()`: Exibe tabela detalhada no terminal com subtotais formatados em R$ e total geral.
+
+### 4. Testes Executados em `src/main.ts`:
+- Listagem dos 3 clientes iniciais e cadastro de novo cliente.
+- Teste de recusa de ID duplicado, e-mail duplicado e nome vazio em clientes.
+- Inserção de itens no carrinho com acúmulo automático de quantidade.
+- Teste de recusa de quantidade zero/negativa, produto inexistente e quantidade superior ao estoque.
+- Alteração de quantidade e remoção de produto do carrinho, comprovando cálculos automáticos de subtotal e total.
+
+---
+
+## 📋 Detalhamento da Fase 4 (Próxima Fase)
+
+- [ ] Criar `src/pedidos.ts`:
+  - Armazenamento em memória `pedidos: Pedido[]`.
+  - Implementar `finalizarPedido(clienteId: number): Pedido | null`:
+    - Validação de carrinho não vazio.
+    - Validação de cliente cadastrado.
+    - Validação prévia de estoque para **todos** os itens (garantia atômica / sem desconto parcial).
+    - Congelamento dos preços históricos nos itens do pedido.
+    - Abatimento do estoque dos produtos em `produtos.ts`.
+    - Esvaziamento do carrinho e geração de ID único.
+  - Implementar `listarPedidos(): Pedido[]`.
+  - Implementar `buscarPedidosPorCliente(clienteId: number): Pedido[]`.

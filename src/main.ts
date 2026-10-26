@@ -1,101 +1,109 @@
 // ==========================================
 // PONTO DE ENTRADA DA APLICAÇÃO (main.ts)
-// Demonstração das Funcionalidades - Fase 2
+// Demonstração das Funcionalidades - Fase 3
 // ==========================================
 
 import {
   listarProdutos,
   buscarProdutoPorId,
-  buscarProdutosPorNome,
-  filtrarProdutosPorCategoria,
-  cadastrarProduto,
-  atualizarProduto,
-  removerProduto,
 } from "./produtos";
+
+import {
+  listarClientes,
+  buscarClientePorId,
+  cadastrarCliente,
+} from "./clientes";
+
+import {
+  adicionarAoCarrinho,
+  alterarQuantidadeCarrinho,
+  removerDoCarrinho,
+  exibirResumoCarrinho,
+  calcularTotalCarrinho,
+} from "./carrinho";
 
 console.log("==================================================");
 console.log("🛒 SISTEMA DE E-COMMERCE (TypeScript & Node.js)");
-console.log("TESTE DE FUNCIONALIDADES - FASE 2: PRODUTOS");
+console.log("TESTE DE FUNCIONALIDADES - FASE 3: CLIENTES E CARRINHO");
 console.log("==================================================\n");
 
-// 1. Listagem inicial de produtos
-console.log("--- 1. Listagem de Todos os Produtos Disponíveis ---");
-console.table(listarProdutos());
+// ----------------------------------------------------
+// 1. CLIENTES
+// ----------------------------------------------------
+console.log("--- 1. Listagem dos Clientes Iniciais ---");
+console.table(listarClientes());
 
-// 2. Busca por identificador
-console.log("\n--- 2. Busca de Produto por ID (Ex: ID 3) ---");
-const produtoId3 = buscarProdutoPorId(3);
-console.log(produtoId3);
-
-// 3. Busca por parte do nome
-console.log("\n--- 3. Busca por Nome Parcial (Ex: 'Gamer') ---");
-const produtosGamer = buscarProdutosPorNome("Gamer");
-console.log(produtosGamer);
-
-// 4. Filtrar por categoria
-console.log("\n--- 4. Filtro por Categoria (Ex: 'Periféricos') ---");
-const perifericos = filtrarProdutosPorCategoria("Periféricos");
-console.table(perifericos);
-
-// 5. Cadastrar novo produto válido
-console.log("\n--- 5. Cadastro de Novo Produto Válido ---");
-cadastrarProduto({
-  id: 6,
-  nome: "Webcam Full HD 1080p",
-  categoria: "Acessórios",
-  preco: 210.0,
-  estoque: 10,
+console.log("\n--- 2. Cadastro de Novo Cliente Válido ---");
+cadastrarCliente({
+  id: 4,
+  nome: "Lucas Pereira",
+  email: "lucas.pereira@email.com",
 });
 
-// 6. Testes de Validações Obrigatórias (Situações Inválidas)
-console.log("\n--- 6. Teste de Validações e Regras de Negócio ---");
-
-console.log("\n-> Tentativa 1: Cadastrar com ID repetido (ID 1)");
-cadastrarProduto({
+console.log("\n--- 3. Teste de Validações em Clientes ---");
+console.log("-> Tentativa com ID duplicado (ID 1):");
+cadastrarCliente({
   id: 1,
-  nome: "Teclado Repetido",
-  categoria: "Periféricos",
-  preco: 150.0,
-  estoque: 5,
+  nome: "Outra Ana",
+  email: "outra.ana@email.com",
 });
 
-console.log("\n-> Tentativa 2: Cadastrar com preço menor ou igual a zero (Preço R$ -10)");
-cadastrarProduto({
-  id: 7,
-  nome: "Mouse Pad Inválido",
-  categoria: "Acessórios",
-  preco: -10.0,
-  estoque: 10,
+console.log("\n-> Tentativa com E-mail duplicado:");
+cadastrarCliente({
+  id: 5,
+  nome: "Carlos Clone",
+  email: "carlos.edu@email.com",
 });
 
-console.log("\n-> Tentativa 3: Cadastrar com estoque negativo (-5)");
-cadastrarProduto({
-  id: 8,
-  nome: "Cabo HDMI Inválido",
-  categoria: "Acessórios",
-  preco: 30.0,
-  estoque: -5,
+console.log("\n-> Tentativa com Nome Vazio:");
+cadastrarCliente({
+  id: 6,
+  nome: "",
+  email: "semnome@email.com",
 });
 
-console.log("\n-> Tentativa 4: Cadastrar com nome vazio");
-cadastrarProduto({
-  id: 9,
-  nome: "   ",
-  categoria: "Acessórios",
-  preco: 50.0,
-  estoque: 10,
-});
+// ----------------------------------------------------
+// 2. CARRINHO DE COMPRAS
+// ----------------------------------------------------
+console.log("\n--- 4. Adição de Itens Válidos ao Carrinho ---");
+// Produto 1: Teclado Mecânico (Preço: 250, Estoque: 15) -> Adicionar 2 un
+adicionarAoCarrinho(1, 2);
 
-// 7. Atualização de informações de produto
-console.log("\n--- 7. Atualização de Produto (ID 6: alterar preço para R$ 190.00 e estoque para 15) ---");
-atualizarProduto(6, { preco: 190.0, estoque: 15 });
-console.log(buscarProdutoPorId(6));
+// Produto 2: Mouse Gamer (Preço: 120, Estoque: 20) -> Adicionar 3 un
+adicionarAoCarrinho(2, 3);
 
-// 8. Remoção de produto
-console.log("\n--- 8. Remoção de Produto (Remover ID 6) ---");
-removerProduto(6);
-console.log("Verificação do produto removido:", buscarProdutoPorId(6));
+// Adicionar novamente o Produto 1 para testar acúmulo de quantidade (mais 1 un -> total 3 un)
+adicionarAoCarrinho(1, 1);
+
+exibirResumoCarrinho();
+
+console.log("\n--- 5. Testes de Validações no Carrinho ---");
+
+console.log("\n-> Tentativa 1: Quantidade menor ou igual a zero:");
+adicionarAoCarrinho(3, 0);
+
+console.log("\n-> Tentativa 2: Produto inexistente (ID 999):");
+adicionarAoCarrinho(999, 1);
+
+console.log("\n-> Tentativa 3: Quantidade superior ao estoque disponível:");
+// Produto 3 (Monitor) tem 8 no estoque, tentar adicionar 10
+adicionarAoCarrinho(3, 10);
+
+console.log("\n--- 6. Alteração e Remoção no Carrinho ---");
+// Alterar quantidade do Mouse Gamer (ID 2) de 3 para 5
+alterarQuantidadeCarrinho(2, 5);
+
+// Adicionar um produto temporário para depois remover
+adicionarAoCarrinho(4, 1);
+console.log("\nCarrinho antes da remoção:");
+exibirResumoCarrinho();
+
+// Remover produto ID 4
+removerDoCarrinho(4);
+
+console.log("\nCarrinho após remover o produto ID 4:");
+exibirResumoCarrinho();
 
 console.log("\n==================================================");
-console.log("Fase 2 executada com sucesso!");
+console.log(`Fase 3 executada com sucesso! Total atual do carrinho: R$ ${calcularTotalCarrinho().toFixed(2)}`);
 console.log("==================================================");

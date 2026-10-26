@@ -191,3 +191,4 @@ export function removerProduto(id: number): boolean {
   console.log(`[SUCESSO] Produto "${produtoRemovido.nome}" (ID ${id}) removido do catálogo.`);
   return true;
 }
+
