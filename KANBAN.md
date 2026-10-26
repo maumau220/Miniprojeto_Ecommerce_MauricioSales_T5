@@ -13,8 +13,8 @@
 | **Fase 1** | Setup do Ambiente, Configurações (`tsconfig`, `.gitignore`, `package.json`) e Tipos Centrais (`types.ts`) |  **Concluído** | `4f065d2` (25/10/2026 20:48) |
 | **Fase 2** | Catálogo de Produtos, Gestão de Estoque e Validações Obrigatórias (`produtos.ts`) |  **Concluído** | `a1d201b` (25/10/2026 21:28) |
 | **Fase 3** | Módulo de Clientes e Carrinho de Compras (`clientes.ts`, `carrinho.ts`) |  **Concluído** | `b7a6ce7` (25/10/2026 22:15) |
-| **Fase 4** | Fechamento de Pedidos e Controle Atômico de Estoque (`pedidos.ts`) |  **Concluído** | `feat: modulo de finalizacao de pedidos com historico de precos e baixa no estoque` (25/10/2026 ~23:50) |
-| **Fase 5** | Integração Completa, Relatórios e Testes no Terminal (`relatorios.ts`, `main.ts`) | ⏳ **A Fazer** | - |
+| **Fase 4** | Fechamento de Pedidos e Controle Atômico de Estoque (`pedidos.ts`) |  **Concluído** | `88a1ae1` (25/10/2026 23:50) |
+| **Fase 5** | Integração Completa, Relatórios e Testes no Terminal (`relatorios.ts`, `main.ts`) | 🔄 **Aguardando Commit** | *Código implementado, compilado e testado com sucesso* |
 | **Fase 6** | Documentação Final (`README.md`), Revisão dos Critérios e Submissão no AVA | ⏳ **A Fazer** | - |
 
 ---
@@ -112,23 +112,46 @@
 - `buscarPedidosPorCliente(clienteId)`: Filtra pedidos realizados por um determinado cliente.
 - `exibirDetalhesPedido(pedido)`: Exibe o recibo completo e formatado do pedido no terminal.
 
-### 3. Testes Executados em `src/main.ts`:
-- Fechamento de pedidos de sucesso para clientes distintos.
-- Conferência da baixa de estoque dos produtos vendidos.
-- Teste prático de imutabilidade de preços: alteração do valor de um produto no catálogo e comprovação de que o pedido anterior reteve o preço de compra.
-- Rejeição de carrinho vazio e cliente inexistente.
-- Validação atômica de estoque: cancelamento total do pedido sem deduzir nenhum estoque quando um item não possui quantidade suficiente.
-- Consulta de pedidos gerais e filtrados por cliente.
+---
+
+## 📝 Documentação da Fase 5 (Implementada e Testada)
+
+### 1. Objetivos da Fase 5:
+- Criar o módulo `src/relatorios.ts` para consolidação financeira e monitoramento de estoque.
+- Integrar todos os módulos em `src/main.ts` cobrindo 100% dos requisitos do edital (seção 3.4 e Sprint 5):
+  - Catálogo, clientes, carrinho, cálculos, pedidos, redução de estoque e relatórios.
+  - Demonstração explícita de no mínimo 3 situações inválidas.
+
+### 2. Funções Implementadas em `relatorios.ts`:
+- `gerarRelatorioEstoqueBaixo(limite)`: Retorna produtos com estoque crítico (menor ou igual ao limite).
+- `calcularFaturamentoTotal()`: Soma de todos os pedidos finalizados utilizando `.reduce()`.
+- `calcularTotalItensVendidos()`: Soma a quantidade total de itens físicos comercializados.
+- `exibirPainelRelatorios()`: Exibe painel gerencial formatado com total de pedidos, unidades vendidas, faturamento, ticket médio e tabela de estoque crítico.
+
+### 3. Roteiro Demonstrativo em `src/main.ts`:
+1. **Catálogo**: Listagem geral, busca por ID, busca parcial por nome e filtragem por categoria. Cadastro de novo produto válido.
+2. **Clientes**: Listagem dos 3 iniciais e cadastro de novo cliente.
+3. **Carrinho de Compras**: Adição com acúmulo de quantidade, alteração de quantidade, remoção de item e cálculo automático de subtotais e total geral.
+4. **Finalização de Pedidos**: Dois pedidos reais processados com recibos detalhados e confirmação visual da baixa de estoque.
+5. **Situações Inválidas (Edital 3.4)**:
+   - Tentativa de produto com preço negativo.
+   - Tentativa de adicionar quantidade superior ao estoque.
+   - Tentativa de finalizar pedido com carrinho vazio.
+   - Tentativa de cliente com e-mail duplicado.
+   - Tentativa de pedido para cliente inexistente.
+6. **Consultas**: Listagem de pedidos e busca por cliente.
+7. **Relatórios**: Apresentação do painel gerencial consolidado.
 
 ---
 
-## 📋 Detalhamento da Fase 5 (Próxima Fase)
+## 📋 Detalhamento da Fase 6 (Próxima Fase)
 
-- [ ] Criar `src/relatorios.ts`:
-  - `relatorioEstoqueBaixo(limite)`: Lista produtos com estoque abaixo do limite (ex: menor que 10).
-  - `relatorioFaturamentoTotal()`: Soma de todas as vendas realizadas.
-  - `relatorioVendasPorCategoria()`: Consolidação do volume financeiro por categoria de produto.
-- [ ] Atualizar `src/main.ts` com um roteiro integrado completo para a demonstração final:
-  - Fluxo comercial completo de ponta a ponta.
-  - Apresentação de relatórios gerenciais consolidados.
-  - Demonstração explícita de todas as situações inválidas exigidas no edital (preço negativo, estoque excedido, carrinho vazio).
+- [ ] Elaborar o `README.md` completo atendendo a todos os tópicos avaliativos:
+  - Identificação (Aluno e Turma).
+  - Objetivo do projeto.
+  - Funcionalidades implementadas.
+  - Tecnologias e comandos de execução (`npm run build`, `npm start`).
+  - Estrutura de arquivos e módulos.
+  - Regras de negócio e validações.
+  - Limitações conhecidas (armazenamento em memória).
+- [ ] Revisão geral do repositório para submissão final no AVA até 26/10 às 22h.

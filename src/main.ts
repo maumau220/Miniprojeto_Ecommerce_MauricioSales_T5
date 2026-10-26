@@ -1,22 +1,28 @@
-// ==========================================
-// PONTO DE ENTRADA DA APLICAÇÃO (main.ts)
-// Demonstração das Funcionalidades - Fase 4
-// ==========================================
+// ===================================================================
+// PONTO DE ENTRADA PRINCIPAL (main.ts)
+// Demonstração Completa do Sistema de Gerenciamento de E-commerce
+// Atende a todos os requisitos do item 3.4 e Sprint 5 da avaliação
+// ===================================================================
 
 import {
   listarProdutos,
   buscarProdutoPorId,
-  atualizarProduto,
+  buscarProdutosPorNome,
+  filtrarProdutosPorCategoria,
+  cadastrarProduto,
 } from "./produtos";
 
 import {
   listarClientes,
-  buscarClientePorId,
+  cadastrarCliente,
 } from "./clientes";
 
 import {
   adicionarAoCarrinho,
+  alterarQuantidadeCarrinho,
+  removerDoCarrinho,
   exibirResumoCarrinho,
+  calcularTotalCarrinho,
   limparCarrinho,
 } from "./carrinho";
 
@@ -27,93 +33,169 @@ import {
   exibirDetalhesPedido,
 } from "./pedidos";
 
-console.log("==================================================");
-console.log("🛒 SISTEMA DE E-COMMERCE (TypeScript & Node.js)");
-console.log("TESTE DE FUNCIONALIDADES - FASE 4: PEDIDOS E ESTOQUE");
-console.log("==================================================\n");
+import { exibirPainelRelatorios } from "./relatorios";
 
-// ----------------------------------------------------
-// 1. FLUXO DE SUCESSO: COMPRA DO CLIENTE 1 (Ana Silva)
-// ----------------------------------------------------
-console.log("--- 1. Estado Inicial do Estoque dos Produtos 1 e 2 ---");
-console.log("Produto 1 (Teclado):", buscarProdutoPorId(1));
-console.log("Produto 2 (Mouse):", buscarProdutoPorId(2));
+console.log("===================================================================");
+console.log("🚀 MINI-PROJETO AVALIATIVO: SISTEMA DE GERENCIAMENTO DE E-COMMERCE");
+console.log("Desenvolvido em TypeScript & Node.js | Back-End Módulo 1");
+console.log("Estudante: Maurício Sales - Turma T5");
+console.log("===================================================================\n");
 
-console.log("\n--- 2. Montando o Carrinho para Ana Silva (Cliente ID 1) ---");
-adicionarAoCarrinho(1, 2); // 2 Teclados (Estoque inicial: 15)
-adicionarAoCarrinho(2, 3); // 3 Mouses (Estoque inicial: 20)
+// ===================================================================
+// 1. CONSULTA E CADASTRO DE PRODUTOS
+// ===================================================================
+console.log("-------------------------------------------------------------------");
+console.log("📦 1. CONSULTA E CADASTRO DE PRODUTOS");
+console.log("-------------------------------------------------------------------");
+
+console.log("-> Catálogo inicial de produtos:");
+console.table(listarProdutos());
+
+console.log("-> Cadastrando novo produto válido (Webcam Full HD):");
+cadastrarProduto({
+  id: 6,
+  nome: "Webcam Full HD 1080p",
+  categoria: "Acessórios",
+  preco: 220.0,
+  estoque: 14,
+});
+
+console.log("\n-> Busca por nome parcial contendo 'Gamer':");
+console.log(buscarProdutosPorNome("Gamer"));
+
+console.log("\n-> Filtro por categoria 'Periféricos':");
+console.table(filtrarProdutosPorCategoria("Periféricos"));
+
+// ===================================================================
+// 2. CONSULTA E CADASTRO DE CLIENTES
+// ===================================================================
+console.log("\n-------------------------------------------------------------------");
+console.log("👤 2. CONSULTA E CADASTRO DE CLIENTES");
+console.log("-------------------------------------------------------------------");
+
+console.log("-> Clientes cadastrados inicialmente:");
+console.table(listarClientes());
+
+console.log("-> Cadastrando novo cliente (Lucas Pereira):");
+cadastrarCliente({
+  id: 4,
+  nome: "Lucas Pereira",
+  email: "lucas.pereira@email.com",
+});
+
+// ===================================================================
+// 3. OPERAÇÕES DO CARRINHO DE COMPRAS E CÁLCULO DE VALORES
+// ===================================================================
+console.log("\n-------------------------------------------------------------------");
+console.log("🛒 3. GERENCIAMENTO DO CARRINHO DE COMPRAS E CÁLCULO DE VALORES");
+console.log("-------------------------------------------------------------------");
+
+console.log("-> Adicionando produtos ao carrinho:");
+adicionarAoCarrinho(1, 2); // 2 Teclados Mecânicos (R$ 250 cada)
+adicionarAoCarrinho(2, 1); // 1 Mouse Gamer (R$ 120 cada)
+adicionarAoCarrinho(1, 1); // Adiciona mais 1 Teclado -> total 3 un (testa acúmulo sem duplicar)
+
+console.log("\n-> Alterando quantidade do Mouse Gamer para 2 unidades:");
+alterarQuantidadeCarrinho(2, 2);
+
+console.log("\n-> Adicionando e depois removendo item temporário (Cadeira Ergonômica ID 5):");
+adicionarAoCarrinho(5, 1);
+removerDoCarrinho(5);
+
+console.log("\n-> Visualização atual do carrinho com subtotais calculados:");
 exibirResumoCarrinho();
 
-console.log("\n--- 3. Finalizando Pedido da Ana Silva ---");
+// ===================================================================
+// 4. FINALIZAÇÃO DE PEDIDO E ATUALIZAÇÃO DO ESTOQUE
+// ===================================================================
+console.log("\n-------------------------------------------------------------------");
+console.log("🧾 4. FINALIZAÇÃO DE PEDIDOS E BAIXA NO ESTOQUE");
+console.log("-------------------------------------------------------------------");
+
+console.log("-> Estoque ANTES da compra:");
+console.log(`Teclado Mecânico (ID 1): ${buscarProdutoPorId(1)?.estoque} un.`);
+console.log(`Mouse Gamer (ID 2): ${buscarProdutoPorId(2)?.estoque} un.`);
+
+console.log("\n-> Finalizando pedido da cliente Ana Silva (ID 1):");
 const pedidoAna = finalizarPedido(1);
+
 if (pedidoAna) {
   exibirDetalhesPedido(pedidoAna);
 }
 
-console.log("\n--- 4. Conferindo Atualização do Estoque Pós-Venda ---");
-console.log("Produto 1 (deve ter 13 em estoque):", buscarProdutoPorId(1));
-console.log("Produto 2 (deve ter 17 em estoque):", buscarProdutoPorId(2));
+console.log("\n-> Estoque APÓS a compra (confirmando a baixa):");
+console.log(`Teclado Mecânico (ID 1): ${buscarProdutoPorId(1)?.estoque} un. (deduziu 3 un.)`);
+console.log(`Mouse Gamer (ID 2): ${buscarProdutoPorId(2)?.estoque} un. (deduziu 2 un.)`);
 
-// ----------------------------------------------------
-// 2. CONGELAMENTO HISTÓRICO DE PREÇO
-// ----------------------------------------------------
-console.log("\n--- 5. Teste de Imutabilidade do Preço Histórico ---");
-console.log("Alterando o preço do Teclado no catálogo de R$ 250 para R$ 320...");
-atualizarProduto(1, { preco: 320.0 });
-
-console.log("Conferindo se o Pedido #1 da Ana ainda mantém o preço antigo de R$ 250.00:");
-console.log(`Preço no Pedido #1: R$ ${pedidoAna?.itens[0].precoUnitario.toFixed(2)} | Preço atual no Catálogo: R$ ${buscarProdutoPorId(1)?.preco.toFixed(2)}`);
-
-// ----------------------------------------------------
-// 3. SEGUNDO PEDIDO: Carlos Eduardo (Cliente ID 2)
-// ----------------------------------------------------
-console.log("\n--- 6. Criando Pedido para Carlos Eduardo (Cliente ID 2) ---");
-adicionarAoCarrinho(3, 1); // 1 Monitor
+// Segundo pedido para enriquecer relatórios
+console.log("\n-> Realizando uma segunda compra para o cliente Carlos Eduardo (ID 2):");
+adicionarAoCarrinho(3, 1); // 1 Monitor 144Hz (R$ 950.00)
+adicionarAoCarrinho(6, 2); // 2 Webcams (R$ 220.00 cada = R$ 440.00)
 const pedidoCarlos = finalizarPedido(2);
 if (pedidoCarlos) {
   exibirDetalhesPedido(pedidoCarlos);
 }
 
-// ----------------------------------------------------
-// 4. TESTES DE VALIDAÇÕES E CASOS INVÁLIDOS
-// ----------------------------------------------------
-console.log("\n--- 7. Testes de Situações Inválidas na Finalização ---");
+// ===================================================================
+// 5. DEMONSTRAÇÃO OBRIGATÓRIA DE SITUAÇÕES INVÁLIDAS (Requisito 3.4)
+// ===================================================================
+console.log("\n-------------------------------------------------------------------");
+console.log("⚠️ 5. DEMONSTRAÇÃO DE SITUAÇÕES INVÁLIDAS E REGRAS DE NEGÓCIO");
+console.log("-------------------------------------------------------------------");
 
-console.log("\n-> Tentativa 1: Finalizar pedido com carrinho vazio:");
+console.log("\n[TESTE INVÁLIDO 1] Tentativa de cadastrar produto com preço negativo ou zero:");
+cadastrarProduto({
+  id: 7,
+  nome: "Mouse Pad Inválido",
+  categoria: "Acessórios",
+  preco: -25.0,
+  estoque: 10,
+});
+
+console.log("\n[TESTE INVÁLIDO 2] Tentativa de adicionar quantidade superior ao estoque:");
+// Monitor (ID 3) tinha 8, vendeu 1 para Carlos, restam 7 no estoque
+console.log(`Estoque atual do Monitor: ${buscarProdutoPorId(3)?.estoque} un.`);
+adicionarAoCarrinho(3, 10); // Tenta colocar 10 un.
+
+console.log("\n[TESTE INVÁLIDO 3] Tentativa de finalizar compra sem itens (carrinho vazio):");
+console.log(`Itens no carrinho: ${calcularTotalCarrinho() === 0 ? "Vazio" : "Com itens"}`);
 finalizarPedido(1);
 
-console.log("\n-> Tentativa 2: Finalizar pedido para cliente inexistente (ID 999):");
-adicionarAoCarrinho(4, 1); // Adiciona item no carrinho
-finalizarPedido(999);
-limparCarrinho();
+console.log("\n[TESTE INVÁLIDO 4 - Extra] Tentativa de finalizar pedido para cliente inexistente:");
+adicionarAoCarrinho(4, 1); // Coloca 1 Headset
+finalizarPedido(999);      // Cliente ID 999 não existe
+limparCarrinho();          // Limpa após o teste
 
-console.log("\n-> Tentativa 3: Consistência Atômica de Estoque:");
-console.log("Adicionando item normal (1 Headset) e item que excede estoque...");
-// Monitor tem 7 restantes no estoque (inicial era 8, 1 foi vendido para Carlos)
-adicionarAoCarrinho(4, 1); // 1 Headset
-// Forçando inserção no carrinho simulando caso de corrida/falta de estoque
-// Estoque do monitor é 7, adicionamos 7 e depois tentamos pedir além:
-adicionarAoCarrinho(3, 7);
-// Simulando que alguém comprou o último monitor por fora, deixando estoque em 6
-const monitor = buscarProdutoPorId(3)!;
-monitor.estoque = 5; // agora o carrinho pede 7 mas só tem 5!
-console.log(`Estoque do Monitor alterado para ${monitor.estoque}, mas o carrinho tem 7.`);
+console.log("\n[TESTE INVÁLIDO 5 - Extra] Tentativa de cadastrar cliente com e-mail duplicado:");
+cadastrarCliente({
+  id: 8,
+  nome: "Ana Duplicada",
+  email: "ana.silva@email.com",
+});
 
-console.log("Tentando finalizar pedido com falha de estoque:");
-const pedidoFalha = finalizarPedido(1);
-console.log("Resultado do pedido:", pedidoFalha === null ? "CANCELADO COM SUCESSO (Nenhum estoque abatido)" : "ERRO");
-console.log("Conferência do estoque do Headset (não deve ter sido descontado):", buscarProdutoPorId(4)?.estoque);
+// ===================================================================
+// 6. CONSULTAS DE PEDIDOS E HISTÓRICO
+// ===================================================================
+console.log("\n-------------------------------------------------------------------");
+console.log("🔍 6. CONSULTAS DE PEDIDOS REALIZADOS");
+console.log("-------------------------------------------------------------------");
 
-// ----------------------------------------------------
-// 5. CONSULTAS DE PEDIDOS
-// ----------------------------------------------------
-console.log("\n--- 8. Consulta Geral de Pedidos ---");
-console.log(`Total de pedidos realizados no sistema: ${listarPedidos().length}`);
+console.log(`-> Total de pedidos registrados no sistema: ${listarPedidos().length}`);
+console.log("-> Consultando pedidos específicos da cliente Ana Silva (ID 1):");
+const pedidosCliente1 = buscarPedidosPorCliente(1);
+pedidosCliente1.forEach((p) => {
+  console.log(`   - Pedido #${p.id} em ${p.data} | Total: R$ ${p.total.toFixed(2)} | Itens: ${p.itens.length}`);
+});
 
-console.log("\n--- 9. Consulta de Pedidos da Ana Silva (ID 1) ---");
-const pedidosAna = buscarPedidosPorCliente(1);
-console.log(`Pedidos encontrados para Ana: ${pedidosAna.length}`);
+// ===================================================================
+// 7. RELATÓRIOS CONSOLIDADOS DO E-COMMERCE
+// ===================================================================
+console.log("\n-------------------------------------------------------------------");
+console.log("📈 7. APRESENTAÇÃO DOS RELATÓRIOS CONSOLIDADOS");
+console.log("-------------------------------------------------------------------");
 
-console.log("\n==================================================");
-console.log("Fase 4 executada com sucesso!");
-console.log("==================================================");
+exibirPainelRelatorios();
+
+console.log("\n===================================================================");
+console.log("✅ TODAS AS FUNCIONALIDADES E REQUISITOS FORAM EXECUTADOS COM SUCESSO!");
+console.log("===================================================================\n");

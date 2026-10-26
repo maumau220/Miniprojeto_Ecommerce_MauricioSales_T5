@@ -150,3 +150,4 @@ export function exibirDetalhesPedido(pedido: Pedido): void {
   console.log(`VALOR TOTAL DO PEDIDO: R$ ${pedido.total.toFixed(2)}`);
   console.log("==================================================");
 }
+
