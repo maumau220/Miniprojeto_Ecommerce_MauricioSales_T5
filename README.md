@@ -62,7 +62,7 @@ miniprojeto-ecommerce/
 
 1. **Clonar o repositório:**
    ```bash
-   git clone <URL_DO_REPOSITORIO>
+   git clone https://github.com/maumau220/Miniprojeto_Ecommerce_MauricioSales_T5.git
    cd "Mini Projeto Módulo 1"
    ```
 
